@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+<meta charset="UTF-8">
+<title>Substitution Cipher Chat</title>
+<style>
+  body { font-family: Arial, sans-serif; background:#f4f4f4; display:flex; justify-content:center; align-items:center; height:100vh; }
+  .chat-box { background:white; padding:20px; border-radius:10px; box-shadow:0 0 10px rgba(0,0,0,0.2); width:400px; }
+  textarea { width:100%; height:80px; margin-bottom:10px; }
+  button { padding:10px 20px; margin-right:5px; }
+  #output { margin-top:15px; background:#eee; padding:10px; border-radius:5px; min-height:40px; }
+</style>
+</head>
+<body>
+<div class="chat-box">
+  <h3>Substitution Cipher Chat</h3>
+  <textarea id="input" placeholder="Мессежээ бич..."></textarea><br>
+  <button onclick="sendMessage()">Encrypt</button>
+  <button onclick="decryptMessage()">Decrypt</button>
+  <div id="output"></div>
+</div>
+
+<script>
+const chars = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя" +
+              "abcdefghijklmnopqrstuvwxyz" +
+              "0123456789 .,!?";
+
+// Mapping үүсгэх
+function shuffleString(str) {
+  return str.split('').sort(() => Math.random() - 0.5).join('');
+}
+
+const shuffled = shuffleString(chars);
+const cipherMap = {};
+for (let i=0;i<chars.length;i++){ cipherMap[chars[i]] = shuffled[i]; }
+const decipherMap = Object.fromEntries(Object.entries(cipherMap).map(([k,v])=>[v,k]));
+
+let lastMessage = ""; // хадгалах
+
+function sendMessage(){
+  const input = document.getElementById("input").value.toLowerCase();
+  const encrypted = input.split("").map(c => cipherMap[c] || c).join("");
+  lastMessage = encrypted;
+  document.getElementById("output").innerText = "Encrypted: " + encrypted;
+}
+
+function decryptMessage(){
+  if(!lastMessage) return alert("Эхлээд мессеж бич!");
+  const decrypted = lastMessage.split("").map(c => decipherMap[c] || c).join("");
+  document.getElementById("output").innerText = "Decrypted: " + decrypted;
+}
+</script>
+</body>
+</html>
